@@ -50,6 +50,7 @@ function initDatabase() {
     `);
 
     // Create messages table
+    //coudln't implement read recepits
     db.run(`
       CREATE TABLE IF NOT EXISTS messages (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

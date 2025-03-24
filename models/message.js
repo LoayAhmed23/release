@@ -44,14 +44,7 @@ class Message {
     });
   }
 
-  static async markAsRead(messageId, userId) {
-    const sql = 'UPDATE messages SET read = 1 WHERE id = ? AND receiver_id = ?';
-    return new Promise((resolve, reject) => {
-      db.run(sql, [messageId, userId], function (err) {
-        err ? reject(err) : resolve(this.changes);
-      });
-    });
-  }
+
 }
 
 module.exports = Message;
