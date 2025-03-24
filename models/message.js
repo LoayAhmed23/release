@@ -1,4 +1,4 @@
-const db = require('../config/database');
+const db = require('../database');
 
 class Message {
   static async create(senderId, receiverId, content) {

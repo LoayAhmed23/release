@@ -1,4 +1,4 @@
-const db = require('../config/database');
+const db = require('../database');
 
 class Friend {
   static async createRequest(senderId, receiverId) {

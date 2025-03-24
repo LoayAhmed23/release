@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 
 // Initialize DB
-const db = require('./config/database');
+const db = require('./database');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
