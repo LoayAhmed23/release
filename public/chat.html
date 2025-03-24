@@ -81,6 +81,19 @@
       font-size: 11px;
       color: #888;
       text-align: right;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .read-status {
+      display: inline-flex;
+      align-items: center;
+    }
+    
+    .read-check {
+      color: #34b7f1;
     }
     
     .message-sent {
@@ -209,6 +222,67 @@
       dummyUser.id = 'current-user';
       dummyUser.style.display = 'none';
       document.body.appendChild(dummyUser);
+    }
+    
+    // Override the displayMessages function to show read receipts
+    function displayMessages(messages) {
+      const messagesContainer = document.getElementById('messages-container');
+      
+      if (!messagesContainer) return;
+      
+      if (messages.length === 0) {
+        messagesContainer.innerHTML = '<div class="no-messages"><p>No messages yet</p></div>';
+        return;
+      }
+      
+      // Get current user
+      const currentUserId = document.getElementById('current-user').dataset.id;
+      
+      // Clear container
+      messagesContainer.innerHTML = '';
+      
+      messages.forEach(message => {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = message.sender_id == currentUserId ? 'message message-sent' : 'message message-received';
+        messageDiv.dataset.id = message.id;
+        
+        const content = document.createElement('div');
+        content.className = 'message-content';
+        content.textContent = message.content;
+        
+        const info = document.createElement('div');
+        info.className = 'message-info';
+        
+        // Format timestamp
+        const time = new Date(message.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        
+        // Only show read receipt for sent messages
+        if (message.sender_id == currentUserId) {
+          const readStatus = document.createElement('span');
+          readStatus.className = 'read-status';
+          
+          if (message.read == 1) {
+            readStatus.innerHTML = '<span class="read-check">✓✓</span>';
+            readStatus.title = 'Read';
+          } else {
+            readStatus.innerHTML = '<span>✓</span>';
+            readStatus.title = 'Delivered';
+          }
+          
+          info.innerHTML = `${time} `;
+          info.appendChild(readStatus);
+        } else {
+          info.textContent = time;
+        }
+        
+        messageDiv.appendChild(content);
+        messageDiv.appendChild(info);
+        
+        messagesContainer.appendChild(messageDiv);
+      });
+      
+      // Scroll to bottom
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
   </script>
 </body>

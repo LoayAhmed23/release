@@ -13,7 +13,7 @@ class Message {
   static getConversation(userId, friendId) {
     return new Promise((resolve, reject) => {
       const sql = `
-        SELECT m.id, m.sender_id, m.receiver_id, m.content, m.created_at,
+        SELECT m.id, m.sender_id, m.receiver_id, m.content, m.created_at, m.read,
                s.username as sender_name, r.username as receiver_name
         FROM messages m
         JOIN users s ON m.sender_id = s.id
@@ -31,11 +31,11 @@ class Message {
 
   static async getNewMessages(userId, lastMessageId = 0) {
     const sql = `
-      SELECT m.id, m.sender_id, m.receiver_id, m.content, m.created_at, 
+      SELECT m.id, m.sender_id, m.receiver_id, m.content, m.created_at,  m.read,
              s.username AS sender_name
       FROM messages m
       JOIN users s ON m.sender_id = s.id
-      WHERE m.receiver_id = ? AND m.id > ? 
+      WHERE m.receiver_id = ? AND m.id > ? AND m.read = 0
       ORDER BY m.created_at ASC
     `;
     return new Promise((resolve, reject) => {
@@ -45,6 +45,15 @@ class Message {
     });
   }
 
+  static markAsRead(messageId, userId) {
+    return new Promise((resolve, reject) => {
+      const sql = 'UPDATE messages SET read = 1 WHERE id = ? AND receiver_id = ?';
+      db.run(sql, [messageId, userId], function(err) {
+        if (err) return reject(err);
+        resolve(this.changes);
+      });
+    });
+  }
 
 }
 
