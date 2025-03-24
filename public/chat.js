@@ -1,10 +1,15 @@
-// Chat functionality
+// Modified chat.js for the split pages structure
 
 let currentChatUser = null;
 let pollingInterval = null;
 let lastMessageId = 0;
 
-// Initialize chat application
+// Check if we're on the index page or chat page
+const isIndexPage = window.location.pathname.includes('index.html') || 
+                   window.location.pathname === '/' || 
+                   window.location.pathname === '';
+
+// Initialize chat application (only runs on index.html)
 document.addEventListener('DOMContentLoaded', async () => {
   // Check authentication
   const user = await checkAuth();
@@ -15,22 +20,25 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   
   // Display current user
-  document.getElementById('current-user').textContent = user.username;
+  if (document.getElementById('current-user')) {
+    document.getElementById('current-user').textContent = user.username;
+    document.getElementById('current-user').dataset.id = user.id;
+  }
   
   // Setup logout
   setupLogout();
   
-  // Load friends
-  await loadFriends();
-  
-  // Load friend requests
-  await loadFriendRequests();
-  
-  // Setup user search
-  setupUserSearch();
-  
-  // Start polling for new messages
-  startPollingForMessages();
+  // For index page only
+  if (isIndexPage) {
+    // Load friends
+    await loadFriends();
+    
+    // Load friend requests
+    await loadFriendRequests();
+    
+    // Setup user search
+    setupUserSearch();
+  }
 });
 
 // Open chat with a friend
@@ -42,9 +50,18 @@ function openChat(friendId, friendName) {
   };
   
   // Update UI
-  document.getElementById('chat-header').innerHTML = `<h2>Chat with ${friendName}</h2>`;
+  document.getElementById('chat-header').innerHTML = `
+    <button id="back-btn" class="back-btn">← Back</button>
+    <h2>Chat with ${friendName}</h2>
+    <div></div>
+  `;
+  
+  // Re-attach back button event
+  document.getElementById('back-btn').addEventListener('click', () => {
+    window.location.href = 'index.html';
+  });
+  
   document.getElementById('messages-container').innerHTML = '';
-  document.getElementById('message-form-container').style.display = 'block';
   
   // Load conversation
   loadConversation(friendId);
@@ -105,7 +122,7 @@ function displayMessages(messages) {
     
     // Format timestamp
     const time = new Date(message.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    info.textContent = `${message.sender_name}, ${time}`;
+    info.textContent = `${time}`;
     
     messageDiv.appendChild(content);
     messageDiv.appendChild(info);
@@ -163,6 +180,9 @@ function startPollingForMessages() {
   // Poll every 2 seconds
   pollingInterval = setInterval(async () => {
     try {
+      // Skip polling if we're not on a chat page
+      if (isIndexPage || !currentChatUser) return;
+      
       const response = await authFetch(`/api/messages/new/${lastMessageId}`);
       
       if (!response.ok) throw new Error('Failed to poll for new messages');
@@ -174,17 +194,14 @@ function startPollingForMessages() {
         lastMessageId = Math.max(...newMessages.map(msg => msg.id));
         
         // If we're in a conversation with the sender, add the message to the chat
-        if (currentChatUser) {
-          const relevantMessages = newMessages.filter(
-            msg => msg.sender_id == currentChatUser.id
-          );
-          
-          if (relevantMessages.length > 0) {
-            // Reload conversation to show new messages
-            loadConversation(currentChatUser.id);
-          }
-        }
+        const relevantMessages = newMessages.filter(
+          msg => msg.sender_id == currentChatUser.id
+        );
         
+        if (relevantMessages.length > 0) {
+          // Reload conversation to show new messages
+          loadConversation(currentChatUser.id);
+        }
       }
     } catch (err) {
       console.error('Error polling for messages:', err);

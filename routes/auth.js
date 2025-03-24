@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const auth = require('../auth');
 
-const JWT_SECRET = 'temp_secret'; // In production, use environment variables
+const JWT_SECRET = 'temp_secret1'; // In production, use environment variables
 
 // Register a new user
 router.post('/register', async (req, res) => {

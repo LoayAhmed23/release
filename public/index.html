@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Friends - Chat App</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f0f2f5;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .friends-container {
+      width: 100%;
+      height: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      background-color: white;
+    }
+    
+    /* Header Styles */
+    .app-header {
+      background-color: #3a7bd5;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .app-title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+    }
+    
+    .btn-small {
+      border: none;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    
+    /* Friend Search */
+    .friend-search {
+      padding: 15px;
+      border-bottom: 1px solid #e0e0e0;
+      background-color: #3a7bd5;
+    }
+    
+    .search-form {
+      display: flex;
+    }
+    
+    #search-input {
+      flex-grow: 1;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      margin-right: 5px;
+    }
+    
+    .search-results {
+      margin-top: 10px;
+      max-height: 150px;
+      overflow-y: auto;
+      background-color: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 3px;
+    }
+    
+    .search-results div {
+      padding: 8px;
+      border-bottom: 1px solid #e0e0e0;
+      cursor: pointer;
+    }
+    
+    .search-results div:hover {
+      background-color: #f5f5f5;
+    }
+    
+    /* Friends Section */
+    .friends-section, .requests-section {
+      padding: 15px;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+    
+    .section-title {
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: #333;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .friends-list, .requests-list {
+      list-style: none;
+    }
+    
+    .friends-list li, .requests-list li {
+      padding: 12px;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .friends-list li:hover, .requests-list li:hover {
+      background-color: #f8f9fa;
+    }
+    
+    .friend-name {
+      font-weight: 500;
+    }
+    
+    .action-btns {
+      display: flex;
+      gap: 5px;
+    }
+    
+    .btn {
+      padding: 8px 12px;
+      background-color: #3a7bd5;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    
+    .btn-accept {
+      background-color: #28a745;
+    }
+    
+    .btn-reject {
+      background-color: #dc3545;
+    }
+    
+    /* Error styles */
+    .error {
+      color: #dc3545;
+      text-align: center;
+      padding: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="friends-container">
+    <!-- Header -->
+    <div class="app-header">
+      <div class="app-title">Chat App</div>
+      <div class="user-info">
+        <span id="current-user">Loading...</span>
+        <button id="logout-btn" class="btn-small">Logout</button>
+      </div>
+    </div>
+    
+    <!-- Friend Search -->
+    <div class="friend-search">
+      <div class="search-form">
+        <input type="text" id="search-input" placeholder="Search users...">
+        <button id="search-btn" class="btn-small">Search</button>
+      </div>
+      <div id="search-results" class="search-results"></div>
+    </div>
+    
+    <!-- Friends List -->
+    <div class="friends-section">
+      <h3 class="section-title">Friends</h3>
+      <ul id="friends-list" class="friends-list"></ul>
+    </div>
+    
+    <!-- Friend Requests -->
+    <div class="requests-section">
+      <h3 class="section-title">Friend Requests</h3>
+      <ul id="requests-list" class="requests-list"></ul>
+    </div>
+  </div>
+
+  <script src="/auth.js"></script>
+  <script src="/friend.js"></script>
+  <script src="/chat.js"></script>
+  <script>
+    // Create a hidden container and message form container for compatibility
+    const hiddenElements = document.createElement('div');
+    hiddenElements.style.display = 'none';
+    hiddenElements.innerHTML = `
+      <div id="chat-header"></div>
+      <div id="messages-container"></div>
+      <div id="message-form-container">
+        <form id="message-form">
+          <input type="text" id="message-input">
+        </form>
+      </div>
+    `;
+    document.body.appendChild(hiddenElements);
+    
+    // Override the openChat function
+    function openChat(friendId, friendName) {
+      // Instead of opening the chat in the current page,
+      // redirect to the chat page with query parameters
+      window.location.href = `chat.html?friendId=${friendId}&friendName=${encodeURIComponent(friendName)}`;
+    }
+  </script>
+</body>
+</html>

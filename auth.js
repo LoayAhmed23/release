@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = 'temp_secret'; // In production, use environment variables
+const JWT_SECRET = 'temp_secret1'; // In production, use environment variables
 
 function auth(req, res, next) {
   // Get token from header
