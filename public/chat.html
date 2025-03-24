@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat - Chat App</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f0f2f5;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .chat-container {
+      width: 100%;
+      height: 100%;
+      max-width: 1200px;
+      display: flex;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      background-color: white;
+    }
+    
+    /* Sidebar Styles */
+    .sidebar {
+      width: 280px;
+      background-color: #3a7bd5;
+      color: white;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .user-info {
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .btn-small {
+      border: none;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    
+    .friend-search {
+      padding: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    #search-input {
+      width: 70%;
+      padding: 8px;
+      border: none;
+      border-radius: 3px;
+      margin-right: 5px;
+    }
+    
+    .search-results {
+      margin-top: 10px;
+      max-height: 150px;
+      overflow-y: auto;
+      background-color: 3a7bd5;
+      border-radius: 3px;
+    }
+    
+
+    
+    .friends-section, .requests-section {
+      padding: 15px;
+    }
+    
+    .friends-section h3, .requests-section h3 {
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    
+    .friends-list, .requests-list {
+      list-style: none;
+    }
+    
+    .friends-list li, .requests-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+    }
+    
+    /* Chat Area Styles */
+    .chat-area {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .chat-header {
+      padding: 15px 20px;
+      border-bottom: 1px solid #e0e0e0;
+      background-color: #f8f9fa;
+    }
+    
+    .messages-container {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background-color: white;
+    }
+    
+    .no-messages {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #888;
+    }
+    
+    .message-form-container {
+      padding: 15px;
+      border-top: 1px solid #e0e0e0;
+      background-color: #f8f9fa;
+    }
+    
+    #message-form {
+      display: flex;
+    }
+    
+    #message-input {
+      flex-grow: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      margin-right: 10px;
+    }
+    
+    .btn {
+      padding: 10px 15px;
+      background-color: #3a7bd5;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="user-info">
+        <span id="current-user">Loading...</span>
+        <button id="logout-btn" class="btn-small">Logout</button>
+      </div>
+      
+      <!-- Friend Search -->
+      <div class="friend-search">
+        <input type="text" id="search-input" placeholder="Search users...">
+        <button id="search-btn" class="btn-small">Search</button>
+        <div id="search-results" class="search-results"></div>
+      </div>
+      
+      <!-- Friends List -->
+      <div class="friends-section">
+        <h3>Friends</h3>
+        <ul id="friends-list" class="friends-list"></ul>
+      </div>
+      
+      <!-- Friend Requests -->
+      <div class="requests-section">
+        <h3>Friend Requests</h3>
+        <ul id="requests-list" class="requests-list"></ul>
+      </div>
+    </div>
+    
+    <!-- Chat Area -->
+    <div class="chat-area">
+      <div id="chat-header" class="chat-header">
+        <h2>Select a friend to start chatting</h2>
+      </div>
+      
+      <div id="messages-container" class="messages-container">
+        <div class="no-messages">
+          <p>No conversation selected</p>
+        </div>
+      </div>
+      
+      <div id="message-form-container" class="message-form-container" style="display: none;">
+        <form id="message-form">
+          <input type="text" id="message-input" placeholder="Type your message...">
+          <button type="submit" class="btn">Send</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/auth.js"></script>
+  <script src="/friend.js"></script>
+  <script src="/chat.js"></script>
+</body>
+</html>

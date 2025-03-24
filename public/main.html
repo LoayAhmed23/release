@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat App</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f0f2f5;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    #loading-screen {
+      background-color: white;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      color: #3a7bd5;
+      font-size: 18px;
+      font-weight: 500;
+      position: relative;
+    }
+    
+    #loading-screen:after {
+      content: "...";
+      position: relative;
+      animation: dots 1.5s infinite;
+      display: inline-block;
+      width: 24px;
+      text-align: left;
+    }
+    
+    @keyframes dots {
+      0%, 20% {
+        content: ".";
+      }
+      40% {
+        content: "..";
+      }
+      60%, 100% {
+        content: "...";
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="app">
+    <div id="loading-screen">Loading</div>
+  </div>
+
+  <script src="/auth.js"></script>
+  <script>
+    // Check authentication and redirect accordingly
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuth()
+        .then(user => {
+          if (user) {
+            window.location.href = '/chat.html';
+          } else {
+            window.location.href = '/login.html';
+          }
+        })
+        .catch(err => {
+          console.error('Auth error:', err);
+          window.location.href = '/login.html';
+        });
+    });
+  </script>
+</body>
+</html>

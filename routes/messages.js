@@ -46,13 +46,7 @@ router.get('/conversation/:friendId', auth, async (req, res) => {
     
     const messages = await Message.getConversation(userId, friendId);
     
-    // Mark received messages as read
-    await Promise.all(
-      messages
-        .filter(msg => msg.receiver_id === userId && !msg.read)
-        .map(msg => Message.markAsRead(msg.id, userId))
-    );
-    
+
     res.json(messages);
   } catch (err) {
     console.error(err);

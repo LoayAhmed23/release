@@ -7,7 +7,7 @@ const path = require('path');
 const db = require('./config/database');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3500;
 
 // Middleware
 app.use(cors());
@@ -18,12 +18,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
-app.use('/api/friends', require('./routes/friend'));
-app.use('/api/messages', require('./routes/message'));
+app.use('/api/friends', require('./routes/friends'));
+app.use('/api/messages', require('./routes/messages'));
 
 // Handle SPA routing
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'main.html'));
 });
 
 // Start server
