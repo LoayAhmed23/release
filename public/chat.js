@@ -122,7 +122,7 @@ function displayMessages(messages) {
     
     // Format timestamp
     const time = new Date(message.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    info.textContent = `${message.sender_name}, ${time}`;
+    info.textContent = `${time}`;
     
     messageDiv.appendChild(content);
     messageDiv.appendChild(info);
