@@ -63,31 +63,34 @@ function initDatabase() {
         FOREIGN KEY (receiver_id) REFERENCES users (id)
       )
     `);
+
+    // Create game_state table for the collaborative clicking game
+    db.run(`
+      CREATE TABLE IF NOT EXISTS game_state (
+        id INTEGER PRIMARY KEY CHECK (id = 1),
+        click_count INTEGER DEFAULT 0,
+        last_reset DATETIME DEFAULT CURRENT_TIMESTAMP,
+        total_resets INTEGER DEFAULT 0
+      )
+    `);
+
+    // Insert initial game state
+    db.run(`
+      INSERT OR IGNORE INTO game_state (id, click_count, last_reset, total_resets) 
+      VALUES (1, 0, CURRENT_TIMESTAMP, 0)
+    `);
+
+    // Create click_history table to track individual contributions
+    db.run(`
+      CREATE TABLE IF NOT EXISTS click_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        clicks_contributed INTEGER DEFAULT 1,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users (id)
+      )
+    `);
   });
 }
-db.run(`
-  CREATE TABLE IF NOT EXISTS game_state (
-    id INTEGER PRIMARY KEY CHECK (id = 1),
-    click_count INTEGER DEFAULT 0,
-    last_reset DATETIME DEFAULT CURRENT_TIMESTAMP,
-    total_resets INTEGER DEFAULT 0
-  )
-`);
 
-// Insert initial game state
-db.run(`
-  INSERT OR IGNORE INTO game_state (id, click_count, last_reset, total_resets) 
-  VALUES (1, 0, CURRENT_TIMESTAMP, 0)
-`);
-
-// Create click_history table to track individual contributions
-db.run(`
-  CREATE TABLE IF NOT EXISTS click_history (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    clicks_contributed INTEGER DEFAULT 1,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users (id)
-  )
-`);
 module.exports = db;
