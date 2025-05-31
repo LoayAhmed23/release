@@ -9,7 +9,7 @@ const db = require('./database');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-
+// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -20,6 +20,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/friends', require('./routes/friends'));
 app.use('/api/messages', require('./routes/messages'));
+app.use('/api/game', require('./routes/game')); // Add game routes
 
 // Handle SPA routing
 app.get('*', (req, res) => {
