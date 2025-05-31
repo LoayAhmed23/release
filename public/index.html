@@ -170,6 +170,7 @@
     <div class="app-header">
       <div class="app-title">Chat App</div>
       <div class="user-info">
+        <button id="games-btn" class="btn-small">Games</button>
         <button id="profile-btn" class="btn-small">Profile</button>
         <button id="logout-btn" class="btn-small">Logout</button>
       </div>
@@ -221,6 +222,11 @@
       // redirect to the chat page with query parameters
       window.location.href = `chat.html?friendId=${friendId}&friendName=${encodeURIComponent(friendName)}`;
     }
+    
+    // Link to games page
+    document.getElementById('games-btn').addEventListener('click', () => {
+      window.location.href = 'game.html';
+    });
     
     // Link to profile page
     document.getElementById('profile-btn').addEventListener('click', () => {
