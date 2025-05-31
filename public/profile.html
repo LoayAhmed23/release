@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile - Chat App</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f0f2f5;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .profile-container {
+      width: 100%;
+      height: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      background-color: white;
+    }
+    
+    /* Header Styles */
+    .app-header {
+      background-color: #3a7bd5;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .app-title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+    }
+    
+    .btn-small {
+      border: none;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    
+    /* Profile Section */
+    .profile-section {
+      padding: 30px;
+      flex-grow: 1;
+    }
+    
+    .profile-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      background-color: #3a7bd5;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 32px;
+      font-weight: bold;
+      margin-right: 20px;
+    }
+    
+    .profile-name {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    
+    /* Form Styles */
+    .form-container {
+      margin-top: 30px;
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 5px;
+    }
+    
+    .form-title {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #333;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 5px;
+      color: #555;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .btn {
+      padding: 10px 15px;
+      background-color: #3a7bd5;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    .success-message {
+      color: #28a745;
+      margin-top: 10px;
+      display: none;
+    }
+    
+    .error-message {
+      color: #dc3545;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <!-- Header -->
+    <div class="app-header">
+      <div class="app-title">Chat App</div>
+      <div class="user-info">
+        <button id="friends-btn" class="btn-small">Friends</button>
+        <button id="logout-btn" class="btn-small">Logout</button>
+      </div>
+    </div>
+    
+    <!-- Profile Content -->
+    <div class="profile-section">
+      <div class="profile-header">
+        <div class="profile-avatar" id="avatar"></div>
+        <h2 class="profile-name" id="username">Loading...</h2>
+      </div>
+      
+      <div class="form-container">
+        <h3 class="form-title">Change Password</h3>
+        <form id="password-form">
+          <div class="form-group">
+            <label class="form-label" for="current-password">Current Password</label>
+            <input type="password" id="current-password" class="form-input" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="new-password">New Password</label>
+            <input type="password" id="new-password" class="form-input" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="confirm-password">Confirm New Password</label>
+            <input type="password" id="confirm-password" class="form-input" required>
+          </div>
+          
+          <button type="submit" class="btn">Update Password</button>
+          <div id="success-message" class="success-message">Password updated successfully!</div>
+          <div id="error-message" class="error-message">Error updating password. Please try again.</div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      // Check if the user is authenticated
+      if (!isAuthenticated()) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      try {
+        // Get current user data
+        const userData = await getCurrentUser();
+        
+        // Display username and avatar
+        document.getElementById('username').textContent = userData.username;
+        document.getElementById('current-user').textContent = userData.username;
+        
+        // Set avatar with first letter of username
+        const avatarElement = document.getElementById('avatar');
+        avatarElement.textContent = userData.username.charAt(0).toUpperCase();
+        
+        // Setup logout button
+        document.getElementById('logout-btn').addEventListener('click', logout);
+        
+        // Setup navigation to friends page
+        document.getElementById('friends-btn').addEventListener('click', () => {
+          window.location.href = 'index.html';
+        });
+        
+        // Setup password change form
+        document.getElementById('password-form').addEventListener('submit', changePassword);
+      } catch (error) {
+        console.error('Error loading profile:', error);
+        alert('Failed to load profile data. Please try again later.');
+      }
+    });
+
+    // Function to get current user data
+    async function getCurrentUser() {
+      const response = await fetch('/api/auth/user', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': getToken()
+        }
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to get user data');
+      }
+
+      return response.json();
+    }
+    
+    // Function to change password
+    async function changePassword(event) {
+      event.preventDefault();
+      
+      const currentPassword = document.getElementById('current-password').value;
+      const newPassword = document.getElementById('new-password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+      
+      // Reset messages
+      document.getElementById('success-message').style.display = 'none';
+      document.getElementById('error-message').style.display = 'none';
+      
+      // Validate passwords match
+      if (newPassword !== confirmPassword) {
+        document.getElementById('error-message').textContent = 'New passwords do not match.';
+        document.getElementById('error-message').style.display = 'block';
+        return;
+      }
+      
+      try {
+        const response = await fetch('/api/auth/change-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': getToken()
+          },
+          body: JSON.stringify({
+            currentPassword,
+            newPassword
+          })
+        });
+        
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || 'Password change failed');
+        }
+        
+        // Show success message
+        document.getElementById('success-message').style.display = 'block';
+        
+        // Reset form
+        document.getElementById('password-form').reset();
+      } catch (error) {
+        document.getElementById('error-message').textContent = error.message;
+        document.getElementById('error-message').style.display = 'block';
+      }
+    }
+    
+    // Helper function to get token from localStorage
+    function getToken() {
+      return localStorage.getItem('token');
+    }
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return !!localStorage.getItem('token');
+    }
+    
+    // Helper function to logout
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>

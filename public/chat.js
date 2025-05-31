@@ -202,6 +202,11 @@ function startPollingForMessages() {
           // Reload conversation to show new messages
           loadConversation(currentChatUser.id);
         }
+        // Mark messages as read
+        for (const msg of newMessages) {
+          await authFetch(`/api/messages/read/${msg.id}`, { method: 'POST' });
+        }
+        
       }
     } catch (err) {
       console.error('Error polling for messages:', err);

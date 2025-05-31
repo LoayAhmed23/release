@@ -20,6 +20,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/friends', require('./routes/friends'));
 app.use('/api/messages', require('./routes/messages'));
+app.use('/api/game', require('./routes/game')); // Add game routes
 
 // Handle SPA routing
 app.get('*', (req, res) => {
